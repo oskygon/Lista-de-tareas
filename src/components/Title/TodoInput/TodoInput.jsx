@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 const TodoInput =({addTodo}) =>{
-    const{title,setTitle} = useState('')
+    const[title,setTitle] = useState('')
     const handleTodo= (e) =>{
         if(e.key.toLowerCase()=== 'enter'){
             addTodo(title)
@@ -22,6 +22,7 @@ const TodoInput =({addTodo}) =>{
     value={title}
     onChange={e=> setTitle(e.target.value)}
     onKeyDown={e=> handleTodo(e)}
+ 
 />
         </div>
 
