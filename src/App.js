@@ -47,7 +47,11 @@ const handleDelete= (id)=>{
     <Title />
     
     <TodoInput addTodo={addTodo} />
-    <TodoList todos={todos} handleSetComplete={handleSetComplete} handleDelete={handleDelete}/>
+    <TodoList todos={todos} 
+              handleSetComplete={handleSetComplete}  
+              handleDelete={handleDelete}
+              
+    />
     
    
    
