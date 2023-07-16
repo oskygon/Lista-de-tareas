@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { Title } from "./components/Title";
 import { TodoInput } from "./components/Title/TodoInput";
 // import { Todo } from "./components/Todo";
@@ -9,7 +9,8 @@ function App() {
   const [todos, setTodos] = useState([
   
   ])
-
+const[activeFilter , setActiveFilter] = useState('all')
+const[filteredTodos , setFilteredTodos]= useState('todos')
 
 const addTodo=(title) =>{
 const lastId = todos.length > 0 ? todos[todos.length - 1].id:1;
@@ -38,6 +39,33 @@ const handleDelete= (id)=>{
   setTodos(updatedList);
 }
 
+const handleClearComplete=()=>{
+   const updatedList =todos.filter(todo => !todo.completed);
+   setActiveFilter(updatedList);
+}
+
+const showAllTodos = () =>{
+  setActiveFilter('all')
+}
+const showActiveTodos = () =>{
+  setActiveFilter('active')
+}
+const showCompletedTodos = () =>{
+  setActiveFilter('completed')
+}
+useEffect(() => {
+  if (activeFilter === 'all') {
+    setFilteredTodos(todos);
+  } else if (activeFilter === 'active') {
+      const activeTodos = todos.filter(todo => todo.completed === false);
+      setFilteredTodos(activeTodos);
+  } else if (activeFilter === 'completed') {
+      const completedTodos = todos.filter(todo => todo.completed === true);
+      setFilteredTodos(completedTodos);
+  }
+},[activeFilter, todos]);
+
+
 
 
   return (
@@ -47,11 +75,19 @@ const handleDelete= (id)=>{
     <Title />
     
     <TodoInput addTodo={addTodo} />
-    <TodoList todos={todos} 
+    <TodoList todos={filteredTodos} 
               handleSetComplete={handleSetComplete}  
               handleDelete={handleDelete}
+              activeFilter={activeFilter}
+              showAllTodos={showAllTodos}
+              showActiveTodos={showActiveTodos}
+              showCompletedTodos={showCompletedTodos}
+              handleClearComplete={handleClearComplete} />
+     
+             
+       
               
-    />
+    
     
    
    
