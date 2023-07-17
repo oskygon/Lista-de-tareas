@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Title } from "./components/Title";
 import { TodoInput } from "./components/Title/TodoInput";
@@ -6,6 +5,8 @@ import { TodoList } from "./components/TodoList";
 
 function App() {
   const [todos, setTodos] = useState([]);
+  const [completedTodos, setCompletedTodos] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
 
   const addTodo = (title) => {
     const lastId = todos.length > 0 ? todos[todos.length - 1].id : 1;
@@ -27,6 +28,12 @@ function App() {
       return todo;
     });
     setTodos(updatedList);
+
+    // Move the todo to the completedTodos list
+    const completedTodo = updatedList.find(todo => todo.id === id);
+    if (completedTodo && completedTodo.completed) {
+      setCompletedTodos(prevCompletedTodos => [...prevCompletedTodos, completedTodo]);
+    }
   };
 
   const handleDelete = (id) => {
@@ -35,13 +42,12 @@ function App() {
   };
 
   const handleClearCompleted = () => {
-    const completedTodos = todos.filter((todo) => !todo.completed);
-    setTodos(completedTodos);
+    const remainingTodos = todos.filter((todo) => !todo.completed);
+    setTodos(remainingTodos);
   };
 
   const totalTodos = todos.length;
-  const completedTodos = todos.filter((todo) => todo.completed).length;
-  const activeTodos = totalTodos - completedTodos;
+  const activeTodos = todos.filter((todo) => !todo.completed).length;
 
   return (
     <div className="font-inter bg-gray-900 min-h-screen h-full text-gray-100 flex items-center justify-center py-20 px-5">
@@ -54,16 +60,34 @@ function App() {
           handleDelete={handleDelete}
         />
 
-        <button
-          onClick={handleClearCompleted}
-          className="mt-4 px-4 py-4 text-sm bg-gray-600 text-white w-full   rounded-xl  "
-        >
-          Borrar Completadas
+        <div className="flex items-center justify-center mt-4 space-x-2">
+          <button
+            onClick={handleClearCompleted}
+            className="px-4 py-2 text-sm text-white rounded-xl"
+          >
+            Borrar Completadas
+          </button>
+          <button
+            onClick={() => setShowHistory(!showHistory)}
+            className="px-4 py-2 text-sm text-white rounded-xl"
+          >
+            {showHistory ? 'Ocultar Historial' : 'Mostrar Historial'}
+          </button>
+        </div>
 
-        </button>
-        <div className=" text-xs mt-1 font-inter bg-gray-900  text-gray-100 flex items-center justify-center py-2 px-2">
+        {showHistory && (
+          <div className="mt-4">
+            <h2 className="text-center text-xl font-bold mb-2">Tareas Completadas</h2>
+            <ul className="text-gray-300">
+              {completedTodos.map(todo => (
+                <li key={todo.id}>{todo.title}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div className="text-xs mt-1 font-inter bg-gray-900 text-gray-100 flex items-center justify-center py-2 px-2">
           <span>Total: {totalTodos}</span>
-          <span className="ml-4">Completadas: {completedTodos}</span>
           <span className="ml-4">Activas: {activeTodos}</span>
         </div>
       </div>
@@ -72,3 +96,4 @@ function App() {
 }
 
 export default App;
+
